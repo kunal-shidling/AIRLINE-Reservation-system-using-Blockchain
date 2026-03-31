@@ -18,7 +18,7 @@ Username: kunalshidling_db_user
 
 **Connection string:**
 ```env
-MONGODB_URI=mongodb+srv://kunalshidling_db_user:n8GVeYVPXUldKilo@cluster0.hpg38n4.mongodb.net/
+MONGODB_URI=mongodb+srv://o@cluster0.hpg38n4.mongodb.net/
 ```
 
 ### 🔑 **API Keys** (Not Required! ✅)
