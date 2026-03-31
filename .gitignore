@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Build outputs
+build/
+dist/
+*.tsbuildinfo
+.next/
+out/
+
+# Testing
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Blockchain storage
+backend/services/blockchain-module/src/storage/chain.json
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Database
+*.sqlite
+*.db
+
+# Certificates
+*.pem
+*.key
+*.cert
+# Windows script: scripts/start-all-services.bat

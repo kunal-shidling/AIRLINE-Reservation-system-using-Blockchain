@@ -1,0 +1,19 @@
+{
+  "name": "blockchain-module",
+  "version": "1.0.0",
+  "description": "Blockchain ledger for transaction immutability",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.0.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

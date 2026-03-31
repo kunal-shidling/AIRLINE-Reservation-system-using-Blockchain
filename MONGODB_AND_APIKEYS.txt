@@ -1,0 +1,53 @@
+================================================================================
+  MONGODB URL & API KEYS - CONFIGURATION REFERENCE CARD
+================================================================================
+
+📍 MONGODB URL LOCATIONS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Edit these 3 files:
+
+1. backend/services/user-service/.env
+   Line: MONGODB_URI=mongodb+srv://kunalshidling_db_user:n8GVeYVPXUldKilo@cluster0.hpg38n4.mongodb.net/
+
+2. backend/services/reservation-service/.env
+   Line: MONGODB_URI=mongodb+srv://kunalshidling_db_user:n8GVeYVPXUldKilo@cluster0.hpg38n4.mongodb.net/
+
+3. backend/services/payment-service/.env
+   Line: MONGODB_URI=mongodb+srv://kunalshidling_db_user:n8GVeYVPXUldKilo@cluster0.hpg38n4.mongodb.net/
+
+STATUS: ✅ Already configured with MongoDB Atlas
+CONNECTION: ✅ Tested and working
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔑 API KEYS LOCATIONS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ NO API KEYS REQUIRED!
+
+Optional enhancements only (File: backend/services/ai-module/.env):
+
+   OPENAI_API_KEY=sk-your-key-here          (Optional)
+   HUGGINGFACE_API_KEY=hf_your-key-here      (Optional)
+
+Get from:
+   - OpenAI: https://platform.openai.com/api-keys
+   - HuggingFace: https://huggingface.co/settings/tokens
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 QUICK SUMMARY:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MongoDB Configuration:
+   ✅ 3 files configured
+   ✅ Using MongoDB Atlas (Cloud)
+   ✅ Connection tested
+   ✅ User Service running
+
+API Keys:
+   ✅ Not required for basic functionality
+   ✅ Optional for advanced AI features
+
+================================================================================
