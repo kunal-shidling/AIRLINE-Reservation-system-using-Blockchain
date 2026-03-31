@@ -2,19 +2,41 @@
 
 A production-ready **microservices-based airline reservation system** featuring **AI-powered recommendations** and **blockchain-based transaction logging**.
 
-## 🎯 Project Overview
- 
+## Table of Contents
+
+- Project Overview
+- Architecture
+- Tech Stack
+- Project Structure
+- Quick Start
+- Access URLs
+- Sample Credentials
+- Features
+- API Endpoints
+- Testing
+- Improvements
+- Database Schema
+
+## Project Overview
+
 This is a comprehensive college project demonstrating:
-- **Microservices Architecture** with independent services
-- **AI-Based Flight Recommendations** using rule-based algorithms
-- **Blockchain Integration** for immutable transaction logs
-- **Modern Full-Stack Development** (React + Node.js + Python)
-- **RESTful API Design** with API Gateway pattern
-- **JWT Authentication** for secure user management
+- Microservices architecture with independent services
+- AI-based flight recommendations using rule-based algorithms
+- Blockchain integration for immutable transaction logs
+- Modern full-stack development (React + Node.js + Python)
+- RESTful API design with API Gateway pattern
+- JWT authentication for secure user management
 
----
+## Project Overview
 
-## 🏗️ Architecture
+This project demonstrates:
+- Microservices architecture with an API Gateway
+- AI-based flight recommendations
+- Blockchain-backed transaction logging
+- Modern full-stack development (React + Node.js + Python)
+- RESTful API design and JWT authentication
+
+## Architecture
 
 ```
 ┌─────────────┐
@@ -37,29 +59,27 @@ This is a comprehensive college project demonstrating:
    └───┘└───┘└───┘└───┘└──────┘
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
-- **Node.js** (Express.js) - Microservices
-- **Python** (Flask) - AI Module
-- **MongoDB** - Database (Single instance)
-- **JWT** - Authentication
-- **Axios** - Inter-service communication
+- Node.js (Express.js) - Microservices
+- Python (Flask) - AI module
+- MongoDB - Database (single instance)
+- JWT - Authentication
+- Axios - Inter-service communication
 
 ### Frontend
-- **React 18** - UI Framework
-- **React Router** - Navigation
-- **Context API** - State Management
-- **CSS3** - Styling
+- React 18
+- React Router
+- Context API
+- CSS3
 
-### AI & Blockchain
-- **Custom Blockchain** - SHA-256, Proof of Work
-- **Rule-Based AI** - Flight recommendations
-- **Demand Prediction** - Travel analytics
+### AI and Blockchain
+- Custom blockchain (SHA-256, PoW)
+- Rule-based AI recommendations
+- Demand prediction
 
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 airline-reservation-system/
@@ -72,48 +92,46 @@ airline-reservation-system/
 │   │   ├── ai-module/            # AI (Port 5004, Python)
 │   │   └── blockchain-module/    # Blockchain (Port 5005)
 │   └── shared/                   # Common utilities
-├── frontend/                     # React application (Port 3000)
+├── frontend/                     # React app (Port 3000)
 ├── scripts/                      # Setup scripts
 └── docs/                         # Documentation
 ```
 
----
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-Ensure you have installed:
-- **Node.js** (v18+)
-- **Python** (v3.9+)
-- **MongoDB** (v6+)
-- **npm** or **yarn**
+- Node.js v18+
+- Python v3.9+
+- MongoDB v6+
+- npm or yarn
 
 ### Installation
 
-#### 1️⃣ Clone Repository
+1) Clone the repo
 
 ```bash
 git clone <repository-url>
 cd airline-reservation-system
 ```
 
-#### 2️⃣ Start MongoDB
+2) Start MongoDB
 
 ```bash
 mongod
 ```
 
-#### 3️⃣ Seed Database
+3) Seed database
 
 ```bash
 cd scripts
 node seed-database.js
 ```
 
-#### 4️⃣ Install Dependencies
+4) Install dependencies
 
-**Backend Services:**
+Backend services:
+
 ```bash
 cd backend/services/user-service && npm install
 cd ../reservation-service && npm install
@@ -122,7 +140,8 @@ cd ../blockchain-module && npm install
 cd ../../api-gateway && npm install
 ```
 
-**AI Module (Python):**
+AI module (Python):
+
 ```bash
 cd backend/services/ai-module
 python -m venv venv
@@ -130,26 +149,29 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**Frontend:**
+Frontend:
+
 ```bash
 cd frontend
 npm install
 ```
 
-#### 5️⃣ Start All Services
+5) Start all services
 
-**Option A: Using Script (Linux/Mac)**
+Linux and macOS:
+
 ```bash
 chmod +x scripts/start-all-services.sh
 ./scripts/start-all-services.sh
 ```
 
-**Option B: Using Batch (Windows)**
+Windows:
+
 ```bash
 scripts\start-all-services.bat
 ```
 
-**Option C: Manual Start (Each service in separate terminal)**
+Manual start (separate terminals):
 
 ```bash
 # Terminal 1 - User Service
@@ -181,23 +203,17 @@ cd frontend
 npm start
 ```
 
----
+## Access URLs
 
-## 🌐 Access Application
+- Frontend: http://localhost:3000
+- API Gateway: http://localhost:5000
+- User Service: http://localhost:5001/health
+- Reservation Service: http://localhost:5002/health
+- Payment Service: http://localhost:5003/health
+- AI Module: http://localhost:5004/health
+- Blockchain Module: http://localhost:5005/health
 
-Once all services are running:
-
-- **Frontend**: http://localhost:3000
-- **API Gateway**: http://localhost:5000
-- **User Service**: http://localhost:5001/health
-- **Reservation Service**: http://localhost:5002/health
-- **Payment Service**: http://localhost:5003/health
-- **AI Module**: http://localhost:5004/health
-- **Blockchain Module**: http://localhost:5005/health
-
----
-
-## 👤 Sample Credentials
+## Sample Credentials
 
 ```
 Email: john.doe@example.com
@@ -207,53 +223,19 @@ Email: jane.smith@example.com
 Password: password123
 ```
 
----
+## Features
 
-## 🎓 Key Features Demonstrated
+- Microservices architecture with API Gateway
+- JWT authentication and role-based access
+- AI-based flight recommendations
+- Blockchain-backed booking transactions
+- Responsive UI with search and booking flow
+- Rate limiting and validation
 
-### 1. **Microservices Architecture**
-- Independent deployable services
-- Service-to-service communication
-- API Gateway pattern
-- Database per service (simulated with collections)
+## API Endpoints
 
-### 2. **OOP Principles**
-- **Encapsulation**: Service classes with private methods
-- **Inheritance**: Base service patterns
-- **Polymorphism**: Multiple payment methods
-- **Abstraction**: Database abstraction layers
+Authentication:
 
-### 3. **AI Integration**
-- Rule-based flight recommendations
-- Demand prediction algorithms
-- Price trend analysis
-- Personalized suggestions
-
-### 4. **Blockchain Technology**
-- SHA-256 hashing
-- Proof of Work (mining)
-- Chain validation
-- Immutable transaction logs
-- Block persistence
-
-### 5. **Security**
-- JWT token authentication
-- Password hashing (bcrypt)
-- Rate limiting
-- Input validation
-- Secure payment handling
-
-### 6. **RESTful API Design**
-- Proper HTTP methods (GET, POST, PUT, DELETE)
-- Status codes
-- Error handling
-- Request/Response patterns
-
----
-
-## 📡 API Endpoints
-
-### Authentication
 ```
 POST   /api/users/register      - Register new user
 POST   /api/users/login         - User login
@@ -261,7 +243,8 @@ GET    /api/users/profile       - Get user profile (Protected)
 PUT    /api/users/profile       - Update profile (Protected)
 ```
 
-### Flights & Bookings
+Flights and bookings:
+
 ```
 GET    /api/flights             - Get all flights
 GET    /api/flights/search      - Search flights
@@ -270,53 +253,39 @@ GET    /api/bookings            - Get user bookings (Protected)
 PUT    /api/bookings/:id/cancel - Cancel booking (Protected)
 ```
 
-### Payments
+Payments:
+
 ```
 POST   /api/payments/process    - Process payment (Protected)
 GET    /api/payments/history    - Payment history (Protected)
 ```
 
-### AI Recommendations
+AI recommendations:
+
 ```
-POST   /api/ai/recommendations  - Get flight recommendations
+POST   /api/ai/recommendations      - Get flight recommendations
 GET    /api/ai/popular-destinations - Popular destinations
 ```
 
-### Blockchain
+Blockchain:
+
 ```
 GET    /api/blockchain/chain    - View entire blockchain
 GET    /api/blockchain/stats    - Blockchain statistics
 GET    /api/blockchain/validate - Validate chain integrity
 ```
 
----
+## Testing
 
-## 🧪 Testing
+Manual checklist:
 
-### Manual Testing
+1) Register and log in
+2) Search flights and view AI recommendations
+3) Book a flight and complete payment
+4) View booking history and blockchain verification
+5) Open the blockchain viewer
 
-1. **Register & Login**
-   - Navigate to http://localhost:3000/register
-   - Create account or use sample credentials
-
-2. **Search Flights**
-   - Browse available flights
-   - View AI recommendations
-
-3. **Book Flight**
-   - Select a flight
-   - Add passenger details
-   - Complete payment
-
-4. **View Bookings**
-   - Check booking history
-   - View blockchain verification
-
-5. **Blockchain Viewer**
-   - Navigate to `/blockchain`
-   - Validate chain integrity
-
-### API Testing (Postman/cURL)
+API testing:
 
 ```bash
 # Health Check
@@ -330,41 +299,37 @@ curl -X POST http://localhost:5000/api/users/login \
     "password": "password123"
   }'
 
-# Get Flights
+# Get flights
 curl http://localhost:5000/api/flights
 ```
 
----
+## Improvements
 
-## 💡 Improvements for Higher Marks
+Implemented:
+- Microservices architecture
+- JWT authentication
+- AI recommendations
+- Blockchain integration
+- Rate limiting
+- Error handling
+- Responsive UI
 
-### Implemented Features
-✅ Microservices architecture
-✅ JWT authentication
-✅ AI-based recommendations
-✅ Blockchain integration
-✅ OOP design patterns
-✅ Rate limiting
-✅ Error handling
-✅ Responsive UI
+Suggested:
+- Docker containerization
+- WebSocket updates
+- Redis caching
+- Email notifications
+- Admin dashboard
+- Real payment provider (Stripe/PayPal)
+- Automated tests (Jest/Mocha)
+- CI/CD pipeline
+- Swagger API docs
+- Kubernetes deployment
 
-### Suggested Enhancements
-- **Docker Containerization** - Add `Dockerfile` for each service
-- **WebSocket Integration** - Real-time booking updates
-- **Redis Caching** - Cache flight searches
-- **Email Notifications** - Booking confirmations
-- **Admin Dashboard** - Flight management
-- **Payment Gateway** - Real payment integration (Stripe/PayPal)
-- **Testing Suite** - Jest/Mocha unit tests
-- **CI/CD Pipeline** - GitHub Actions
-- **Swagger Documentation** - API docs
-- **Kubernetes Deployment** - Orchestration
+## Database Schema
 
----
+Users:
 
-## 📊 Database Schema
-
-### Users Collection
 ```javascript
 {
   firstName, lastName, email, password (hashed),
@@ -372,7 +337,8 @@ curl http://localhost:5000/api/flights
 }
 ```
 
-### Flights Collection
+Flights:
+
 ```javascript
 {
   flightNumber, airline, origin, destination,
@@ -382,7 +348,8 @@ curl http://localhost:5000/api/flights
 }
 ```
 
-### Bookings Collection
+Bookings:
+
 ```javascript
 {
   bookingReference, userId, flightId,
@@ -391,7 +358,8 @@ curl http://localhost:5000/api/flights
 }
 ```
 
-### Payments Collection
+Payments:
+
 ```javascript
 {
   transactionId, bookingId, amount,
@@ -510,4 +478,8 @@ For issues or questions:
 **Estimated Project Completion: 95%+**
 #   A I R L I N E - R e s e r v a t i o n - s y s t e m - u s i n g - B l o c k c h a i n 
  
+<<<<<<< HEAD
  
+=======
+ 
+>>>>>>> 8bed901 (done updateed file)
