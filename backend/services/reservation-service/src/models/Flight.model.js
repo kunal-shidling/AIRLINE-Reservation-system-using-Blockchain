@@ -114,6 +114,10 @@ const flightSchema = new mongoose.Schema({
     type: String,
     enum: ['WIFI', 'MEALS', 'ENTERTAINMENT', 'POWER_OUTLETS', 'EXTRA_LEGROOM']
   }],
+  isDynamic: {
+    type: Boolean,
+    default: false
+  },
   isActive: {
     type: Boolean,
     default: true

@@ -6,14 +6,316 @@
 const Flight = require('../models/Flight.model');
 const Booking = require('../models/Booking.model');
 const axios = require('axios');
+const config = require('../config/config');
 const Logger = require('../../../../shared/utils/logger');
 const { MESSAGES, BOOKING_STATUS } = require('../../../../shared/constants/status-codes');
 
 const SERVICE_NAME = 'RESERVATION-SERVICE';
 
+const CITY_ALIASES = {
+  delhi: ['delhi', 'new delhi'],
+  'new delhi': ['new delhi', 'delhi'],
+  bangalore: ['bangalore', 'bengaluru', 'bengalore'],
+  bengaluru: ['bengaluru', 'bangalore', 'bengalore'],
+  bengalore: ['bengalore', 'bangalore', 'bengaluru'],
+  mumbai: ['mumbai', 'bombay'],
+  bombay: ['bombay', 'mumbai'],
+  goa: ['goa'],
+  chennai: ['chennai', 'madras'],
+  madras: ['madras', 'chennai'],
+  hyderabad: ['hyderabad']
+};
+
 class ReservationService {
+  getCitySearchValues(city) {
+    const normalizedCity = city.trim().toLowerCase();
+    return CITY_ALIASES[normalizedCity] || [normalizedCity];
+  }
+
+  buildLocationFilter(fieldName, value) {
+    const normalizedValue = value.trim();
+    const valueUpper = normalizedValue.toUpperCase();
+    const cityValues = this.getCitySearchValues(normalizedValue);
+
+    return {
+      $or: [
+        { [`${fieldName}.airportCode`]: valueUpper },
+        {
+          [`${fieldName}.city`]: {
+            $in: cityValues.map((city) => new RegExp(`^${city}$`, 'i'))
+          }
+        }
+      ]
+    };
+  }
+
+  buildRouteQuery(origin, destination) {
+    const routeFilters = [];
+
+    if (origin) {
+      routeFilters.push(this.buildLocationFilter('origin', origin));
+    }
+
+    if (destination) {
+      routeFilters.push(this.buildLocationFilter('destination', destination));
+    }
+
+    if (routeFilters.length === 0) {
+      return {};
+    }
+
+    if (routeFilters.length === 1) {
+      return routeFilters[0];
+    }
+
+    return { $and: routeFilters };
+  }
+
+  buildDateRange(departureDate) {
+    if (!departureDate) {
+      return null;
+    }
+
+    const startDate = new Date(departureDate);
+    const endDate = new Date(departureDate);
+
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      return null;
+    }
+
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+
+    return { startDate, endDate };
+  }
+
+  createDynamicFlightFromTemplate(templateFlight, targetDate) {
+    const templateDeparture = new Date(templateFlight.departureTime);
+    const templateArrival = new Date(templateFlight.arrivalTime);
+
+    const departureTime = new Date(targetDate);
+    departureTime.setHours(
+      templateDeparture.getHours(),
+      templateDeparture.getMinutes(),
+      templateDeparture.getSeconds(),
+      templateDeparture.getMilliseconds()
+    );
+
+    const arrivalTime = new Date(departureTime.getTime() + ((templateFlight.duration || 0) * 60 * 1000));
+
+    return {
+      airline: templateFlight.airline,
+      origin: templateFlight.origin,
+      destination: templateFlight.destination,
+      departureTime,
+      arrivalTime: templateArrival > templateDeparture ? arrivalTime : departureTime,
+      duration: templateFlight.duration,
+      price: templateFlight.price,
+      availableSeats: templateFlight.totalSeats || templateFlight.availableSeats,
+      totalSeats: templateFlight.totalSeats || templateFlight.availableSeats,
+      aircraft: templateFlight.aircraft,
+      status: 'SCHEDULED',
+      amenities: templateFlight.amenities || [],
+      isActive: true
+    };
+  }
+
+  async generateUniqueFlightNumber(templateFlight, seedDigits) {
+    const flightPrefix = (templateFlight.flightNumber || '').slice(0, 2).toUpperCase() || 'AR';
+    const candidates = [];
+
+    if (seedDigits && String(seedDigits).length === 4) {
+      candidates.push(String(seedDigits));
+    }
+
+    for (let i = 0; i < 5; i += 1) {
+      const randomDigits = Math.floor(1000 + Math.random() * 9000);
+      candidates.push(String(randomDigits));
+    }
+
+    for (const digits of candidates) {
+      const flightNumber = `${flightPrefix}${digits}`;
+      const exists = await Flight.exists({ flightNumber });
+      if (!exists) {
+        return flightNumber;
+      }
+    }
+
+    throw new Error('Unable to generate a unique flight number');
+  }
+
+  async createOrReuseDynamicFlight(templateFlight, targetDate) {
+    const baseFlight = this.createDynamicFlightFromTemplate(templateFlight, targetDate);
+    const departureTime = baseFlight.departureTime;
+
+    const existingFlight = await Flight.findOne({
+      airline: baseFlight.airline,
+      'origin.airportCode': baseFlight.origin.airportCode,
+      'destination.airportCode': baseFlight.destination.airportCode,
+      departureTime,
+      isActive: true,
+      status: 'SCHEDULED'
+    });
+
+    if (existingFlight) {
+      return existingFlight;
+    }
+
+    const seedDigits = `${String(departureTime.getHours()).padStart(2, '0')}${String(departureTime.getMinutes()).padStart(2, '0')}`;
+    const flightNumber = await this.generateUniqueFlightNumber(templateFlight, seedDigits);
+
+    const flightData = {
+      flightNumber,
+      airline: baseFlight.airline,
+      origin: baseFlight.origin,
+      destination: baseFlight.destination,
+      departureTime: baseFlight.departureTime,
+      arrivalTime: baseFlight.arrivalTime,
+      duration: baseFlight.duration,
+      price: baseFlight.price,
+      availableSeats: baseFlight.availableSeats,
+      totalSeats: baseFlight.totalSeats,
+      aircraft: baseFlight.aircraft,
+      status: baseFlight.status,
+      amenities: baseFlight.amenities,
+      isDynamic: true,
+      isActive: baseFlight.isActive
+    };
+
+    const createdFlight = new Flight(flightData);
+    await createdFlight.save();
+
+    return createdFlight;
+  }
+
+  getAirportCodeFromCity(city) {
+    if (!city) {
+      return 'XXX';
+    }
+
+    const letters = city.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    if (letters.length >= 3) {
+      return letters.slice(0, 3);
+    }
+
+    return `${letters}${'X'.repeat(3 - letters.length)}`;
+  }
+
+  buildFallbackTemplates(origin, destination) {
+    const originCity = origin.trim();
+    const destinationCity = destination.trim();
+    const originCode = this.getAirportCodeFromCity(originCity);
+    const destinationCode = this.getAirportCodeFromCity(destinationCity);
+
+    const baseDate = new Date();
+    const scheduleHours = [9, 13, 18];
+
+    return scheduleHours.map((hour, index) => {
+      const departureTime = new Date(baseDate);
+      departureTime.setHours(hour, 0, 0, 0);
+
+      return {
+        flightNumber: `AR${100 + index}`,
+        airline: 'Airline Express',
+        origin: {
+          city: originCity,
+          airport: `${originCity} Airport`,
+          airportCode: originCode
+        },
+        destination: {
+          city: destinationCity,
+          airport: `${destinationCity} Airport`,
+          airportCode: destinationCode
+        },
+        departureTime,
+        arrivalTime: new Date(departureTime.getTime() + (90 * 60 * 1000)),
+        duration: 90,
+        price: {
+          economy: 3500,
+          business: 7200,
+          firstClass: 12000
+        },
+        availableSeats: {
+          economy: 120,
+          business: 24,
+          firstClass: 8
+        },
+        totalSeats: {
+          economy: 120,
+          business: 24,
+          firstClass: 8
+        },
+        aircraft: 'Airbus A320',
+        status: 'SCHEDULED',
+        amenities: ['WIFI', 'MEALS']
+      };
+    });
+  }
+
+  async getDynamicFlightsForDate(searchParams) {
+    const { origin, destination, departureDate } = searchParams;
+    const dateRange = this.buildDateRange(departureDate);
+
+    if (!origin || !destination || !dateRange) {
+      return [];
+    }
+
+    const existingDynamicFlights = await Flight.find({
+      isDynamic: true,
+      isActive: true,
+      status: 'SCHEDULED',
+      ...this.buildRouteQuery(origin, destination),
+      departureTime: {
+        $gte: dateRange.startDate,
+        $lte: dateRange.endDate
+      }
+    }).sort({ departureTime: 1 });
+
+    if (existingDynamicFlights.length > 0) {
+      return existingDynamicFlights;
+    }
+
+    const routeTemplates = await Flight.find({
+      isDynamic: { $ne: true },
+      isActive: true,
+      status: 'SCHEDULED',
+      ...this.buildRouteQuery(origin, destination)
+    })
+      .sort({ departureTime: 1 })
+      .limit(5);
+
+    if (routeTemplates.length === 0) {
+      const fallbackTemplates = this.buildFallbackTemplates(origin, destination);
+      const fallbackFlights = await Promise.all(
+        fallbackTemplates.map((templateFlight) =>
+          this.createOrReuseDynamicFlight(templateFlight, dateRange.startDate)
+        )
+      );
+
+      Logger.info(
+        SERVICE_NAME,
+        `Prepared ${fallbackFlights.length} fallback dynamic flights for ${origin} to ${destination} on ${departureDate}`
+      );
+
+      return fallbackFlights;
+    }
+
+    const dynamicFlights = await Promise.all(
+      routeTemplates.map((templateFlight) =>
+        this.createOrReuseDynamicFlight(templateFlight, dateRange.startDate)
+      )
+    );
+
+    Logger.info(
+      SERVICE_NAME,
+      `Prepared ${dynamicFlights.length} dynamic flights for ${origin} to ${destination} on ${departureDate}`
+    );
+
+    return dynamicFlights;
+  }
+
   /**
-   * Search flights based on criteria
+   * Search flights based on criteria with AI-driven price adjustments
    * @param {Object} searchParams - Search parameters
    * @returns {Array} List of flights
    */
@@ -23,64 +325,65 @@ class ReservationService {
 
       // Convert passengers to number
       const passengerCount = parseInt(passengers, 10) || 1;
+      const routeQuery = this.buildRouteQuery(origin, destination);
+      const dateRange = this.buildDateRange(departureDate);
 
       const query = {
         isActive: true,
-        status: 'SCHEDULED'
+        status: 'SCHEDULED',
+        ...routeQuery
       };
 
-      if (origin) {
-        const originUpper = origin.toUpperCase();
-        // Search by either airport code or city name
-        query.$or = [
-          { 'origin.airportCode': originUpper },
-          { 'origin.city': new RegExp(`^${origin}$`, 'i') }
-        ];
-      }
-
-      if (destination) {
-        const destUpper = destination.toUpperCase();
-        // If origin already has $or, combine both conditions
-        if (query.$or) {
-          const originOr = query.$or;
-          delete query.$or;
-          query.$and = [
-            { $or: originOr },
-            {
-              $or: [
-                { 'destination.airportCode': destUpper },
-                { 'destination.city': new RegExp(`^${destination}$`, 'i') }
-              ]
-            }
-          ];
-        } else {
-          query.$or = [
-            { 'destination.airportCode': destUpper },
-            { 'destination.city': new RegExp(`^${destination}$`, 'i') }
-          ];
-        }
-      }
-
-      if (departureDate) {
-        const startDate = new Date(departureDate);
-        startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(departureDate);
-        endDate.setHours(23, 59, 59, 999);
-
-        if (query.$and) {
-          query.$and.push({ departureTime: { $gte: startDate, $lte: endDate } });
-        } else {
-          query.departureTime = {
-            $gte: startDate,
-            $lte: endDate
-          };
-        }
+      if (dateRange) {
+        query.departureTime = {
+          $gte: dateRange.startDate,
+          $lte: dateRange.endDate
+        };
       }
 
       // Filter by available seats
       query[`availableSeats.${seatClass}`] = { $gte: passengerCount };
 
-      const flights = await Flight.find(query).sort({ departureTime: 1 });
+      let flights = await Flight.find(query).sort({ departureTime: 1 });
+
+      if (flights.length === 0 && origin && destination && dateRange) {
+        flights = await this.getDynamicFlightsForDate(searchParams);
+        flights = flights.filter((flight) =>
+          (flight.availableSeats?.[seatClass] || 0) >= passengerCount
+        );
+      }
+
+      // Next-Generation: Integrate AI for Dynamic Pricing
+      try {
+        const aiAdjustedFlights = await Promise.all(flights.map(async (flight) => {
+          try {
+            const daysUntil = Math.ceil((new Date(flight.departureTime) - new Date()) / (1000 * 60 * 60 * 24));
+            
+            const response = await axios.post(`${config.AI_SERVICE}${config.ENDPOINTS.AI.PRICE}`, {
+              route: {
+                origin: flight.origin.airportCode,
+                destination: flight.destination.airportCode
+              },
+              currentPrice: flight.price[seatClass],
+              daysUntilDeparture: daysUntil > 0 ? daysUntil : 0
+            }, { timeout: 1000 });
+
+            if (response.data && response.data.success) {
+              const flightObj = flight.toObject ? flight.toObject() : { ...flight };
+              flightObj.originalPrice = flight.price[seatClass];
+              flightObj.price[seatClass] = response.data.data.predictedPrice;
+              flightObj.aiPriceNote = "AI-Driven Dynamic Pricing Applied";
+              return flightObj;
+            }
+          } catch (aiErr) {
+            // Silently fail and use original flight if AI service is unavailable
+          }
+          return flight;
+        }));
+        flights = aiAdjustedFlights;
+      } catch (overallAiErr) {
+        Logger.error(SERVICE_NAME, 'AI Price adjustment failed', overallAiErr);
+      }
 
       Logger.info(SERVICE_NAME, `Found ${flights.length} flights`, searchParams);
 
@@ -156,6 +459,23 @@ class ReservationService {
       });
 
       await booking.save();
+
+      // Next-Generation: Blockchain Integration
+      // Every valid booking is recorded in the immutable ledger
+      try {
+        await axios.post(`${config.BLOCKCHAIN_SERVICE}${config.ENDPOINTS.BLOCKCHAIN.RECORD}`, {
+          bookingId: booking._id,
+          userId: booking.userId,
+          flightNumber: booking.flightDetails.flightNumber,
+          amount: booking.totalPrice,
+          seatClass: booking.seatClass,
+          timestamp: new Date()
+        }, { timeout: 2000 });
+        Logger.info(SERVICE_NAME, `Booking ${booking.bookingReference} recorded on blockchain`);
+      } catch (bcError) {
+        Logger.error(SERVICE_NAME, 'Blockchain logging failed', bcError);
+        // We continue anyway as the main DB update succeeded
+      }
 
       // Update available seats
       flight.updateSeats(seatClass, numberOfPassengers, 'book');

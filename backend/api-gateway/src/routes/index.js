@@ -26,6 +26,11 @@ async function forwardRequest(serviceUrl, path, method, data, headers) {
     // Remove the host header to prevent issues when forwarding
     const headersToForward = { ...headers };
     delete headersToForward.host;
+    delete headersToForward['if-none-match'];
+    delete headersToForward['if-modified-since'];
+    delete headersToForward['if-match'];
+    delete headersToForward['if-unmodified-since'];
+    delete headersToForward['if-range'];
 
     const axiosConfig = {
       method,
