@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.premium-landing {
+  position: relative;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: 8rem clamp(1.2rem, 3vw, 4rem) 6rem;
+  overflow: hidden;
+  color: #f4f2ea;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(217, 166, 77, 0.24), transparent 36%),
+    radial-gradient(circle at 78% 14%, rgba(34, 85, 134, 0.36), transparent 40%),
+    linear-gradient(145deg, #081728 0%, #102d4a 42%, #1c4969 100%);
+  min-height: calc(100vh - 80px);
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+}
+
+.orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.orb-layer {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(8px);
+}
+
+.orb-layer--front {
+  width: min(42vw, 530px);
+  height: min(42vw, 530px);
+  top: 8%;
+  right: -12%;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 220, 120, 0.45), rgba(255, 220, 120, 0));
+}
+
+.orb-layer--back {
+  width: min(48vw, 620px);
+  height: min(48vw, 620px);
+  left: -14%;
+  bottom: -18%;
+  background: radial-gradient(circle at 60% 30%, rgba(86, 166, 226, 0.4), rgba(86, 166, 226, 0));
+}
+
+.hero-section,
+.metrics-section,
+.experience-section,
+.fleet-section,
+.route-band,
+.journey-section,
+.story-pin {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: 1.25fr 0.85fr;
+  gap: clamp(1rem, 3vw, 3rem);
+  align-items: center;
+}
+
+.eyebrow {
+  font-family: 'Chakra Petch', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.82rem;
+  color: #f7ce77;
+}
+
+.hero-copy h1 {
+  margin-top: 0.7rem;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+.hero-description {
+  margin-top: 1.2rem;
+  max-width: 54ch;
+  color: rgba(244, 242, 234, 0.86);
+  font-size: clamp(1rem, 1.4vw, 1.17rem);
+  line-height: 1.65;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 1.8rem;
+}
+
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 0.85rem 1.3rem;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.hero-button:hover {
+  transform: translateY(-2px);
+}
+
+.hero-button--primary {
+  color: #081728;
+  background-color: #f5cb70;
+  box-shadow: 0 14px 30px rgba(245, 203, 112, 0.28);
+}
+
+.hero-button--ghost {
+  color: #eaf3fd;
+  border: 1px solid rgba(234, 243, 253, 0.4);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.hero-card,
+.metric,
+.experience-card,
+.fleet-card,
+.journey-step,
+.story-panel,
+.story-lottie-wrap {
+  backdrop-filter: blur(12px);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 1.1rem;
+  box-shadow: 0 18px 42px rgba(2, 8, 18, 0.35);
+}
+
+.hero-card {
+  padding: 1.4rem;
+}
+
+.hero-card-label {
+  color: rgba(233, 240, 250, 0.8);
+  font-size: 0.88rem;
+}
+
+.hero-card h2 {
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  margin-top: 0.45rem;
+}
+
+.hero-card-row {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  color: rgba(238, 242, 247, 0.92);
+  font-size: 0.95rem;
+}
+
+.hero-card-progress {
+  margin-top: 1.1rem;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.hero-card-progress span {
+  display: block;
+  width: 62%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f6d285, #d8a43c);
+}
+
+.hero-card-footnote {
+  margin-top: 0.8rem;
+  color: rgba(234, 243, 253, 0.82);
+  font-size: 0.86rem;
+}
+
+.metrics-section {
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+.metrics-grid,
+.experience-grid,
+.fleet-grid,
+.journey-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.metrics-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.experience-section,
+.story-pin,
+.fleet-section,
+.journey-section {
+  margin-top: clamp(2.3rem, 5vw, 5rem);
+}
+
+.experience-grid,
+.fleet-grid,
+.journey-grid {
+  margin-top: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metric,
+.experience-card,
+.fleet-card,
+.journey-step {
+  padding: 1.1rem;
+}
+
+.story-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(340px, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+  min-height: 72vh;
+}
+
+.story-lottie-wrap {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.story-lottie {
+  min-height: 360px;
+}
+
+.story-caption {
+  margin-top: 0.7rem;
+  color: rgba(237, 244, 252, 0.85);
+  font-size: 0.86rem;
+}
+
+.story-mask {
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.story-track {
+  display: flex;
+  flex-direction: column;
+}
+
+.story-panel {
+  min-height: 72vh;
+  padding: 1.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.story-panel h3 {
+  margin-top: 0.65rem;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+}
+
+.story-panel p {
+  margin-top: 0.8rem;
+  line-height: 1.6;
+  color: rgba(235, 241, 248, 0.86);
+}
+
+.metric h3,
+.section-head h2,
+.experience-card h3,
+.fleet-card h3,
+.journey-step h3,
+.route-band h3 {
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.metric h3 {
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+}
+
+.metric p,
+.experience-card p,
+.fleet-card p,
+.journey-step p {
+  margin-top: 0.35rem;
+  line-height: 1.55;
+  color: rgba(235, 241, 248, 0.84);
+}
+
+.section-head {
+  max-width: 70ch;
+}
+
+.section-head h2 {
+  margin-top: 0.7rem;
+  font-size: clamp(1.7rem, 3.1vw, 2.9rem);
+}
+
+.route-band {
+  margin-top: clamp(2rem, 4vw, 3.6rem);
+}
+
+.route-band > div {
+  border: 1px solid rgba(246, 207, 123, 0.45);
+  border-radius: 1rem;
+  background: linear-gradient(90deg, rgba(246, 207, 123, 0.24), rgba(87, 170, 227, 0.12));
+  padding: 1rem 1.2rem;
+}
+
+.route-band h3 {
+  margin-top: 0.4rem;
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  letter-spacing: 0.03em;
+}
+
+.journey-step span {
+  display: inline-block;
+  font-family: 'Chakra Petch', sans-serif;
+  color: #f7ce77;
+  letter-spacing: 0.08em;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 959px) {
+  .premium-landing {
+    min-height: auto;
+    padding-top: 6.7rem;
+  }
+
+  .hero-section,
+  .story-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid,
+  .experience-grid,
+  .fleet-grid,
+  .journey-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    flex-wrap: wrap;
+  }
+
+  .story-panel {
+    min-height: auto;
+  }
+}

@@ -29,10 +29,18 @@ class BlockchainController {
     try {
       const { bookingId, transactionId, amount, timestamp, paymentMethod, status } = req.body;
 
+      // Log the incoming transaction request
+      Logger.debug(SERVICE_NAME, `Adding transaction for booking: ${bookingId}`);
+
       if (!bookingId || !transactionId || !amount) {
+        const missing = [];
+        if (!bookingId) missing.push('bookingId');
+        if (!transactionId) missing.push('transactionId');
+        if (!amount) missing.push('amount');
+
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
           success: false,
-          message: 'Missing required transaction fields'
+          message: `Missing required transaction fields: ${missing.join(', ')}`
         });
       }
 
@@ -182,6 +190,28 @@ class BlockchainController {
       });
     } catch (error) {
       Logger.error(SERVICE_NAME, 'Find transaction controller error', error);
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  /**
+   * Remove all pending transactions from ledger
+   * DELETE /api/blockchain/transactions/pending
+   */
+  async clearPendingTransactions(req, res) {
+    try {
+      const result = await blockchain.removePendingTransactions();
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: 'All pending transactions removed from blockchain ledger',
+        data: result
+      });
+    } catch (error) {
+      Logger.error(SERVICE_NAME, 'Clear pending transactions controller error', error);
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: error.message

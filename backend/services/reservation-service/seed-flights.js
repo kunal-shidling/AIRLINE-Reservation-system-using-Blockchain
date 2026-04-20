@@ -11,7 +11,8 @@ const SERVICE_NAME = 'SEEDER';
 
 async function seedFlights() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI);
+    const MONGO_PATH = 'mongodb+srv://kunalshidling_db_user:n8GVeYVPXUldKilo@cluster0.hpg38n4.mongodb.net/';
+    await mongoose.connect(MONGO_PATH);
     Logger.success(SERVICE_NAME, 'Connected to MongoDB');
 
     // Clear existing flights
@@ -33,8 +34,8 @@ async function seedFlights() {
           airport: 'Indira Gandhi International',
           airportCode: 'DEL'
         },
-        departureTime: new Date('2026-04-04T10:00:00'),
-        arrivalTime: new Date('2026-04-04T12:30:00'),
+        departureTime: new Date('2026-04-06T10:00:00'),
+        arrivalTime: new Date('2026-04-06T12:30:00'),
         duration: 150,
         price: {
           economy: 3500,

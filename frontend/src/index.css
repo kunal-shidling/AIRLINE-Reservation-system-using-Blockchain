@@ -1,0 +1,314 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark Mode (Default) */
+html.dark body {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 217, 255, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Light Mode */
+html.light body {
+  background: #ffffff;
+  color: #1f2937;
+  font-family: 'Inter', sans-serif;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 217, 255, 0.08) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Dark Mode - Scrollbar */
+html.dark::-webkit-scrollbar {
+  width: 10px;
+}
+
+html.dark::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+html.dark::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #D4AF37 0%, #00D9FF 100%);
+  border-radius: 10px;
+}
+
+html.dark::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #F4D03F 0%, #00D9FF 100%);
+}
+
+/* Light Mode - Scrollbar */
+html.light::-webkit-scrollbar {
+  width: 10px;
+}
+
+html.light::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+html.light::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #D4AF37 0%, #00D9FF 100%);
+  border-radius: 10px;
+}
+
+html.light::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #F4D03F 0%, #00D9FF 100%);
+}
+
+/* Selection Color */
+html.dark::selection {
+  background: #D4AF37;
+  color: #0A0A0A;
+}
+
+html.light::selection {
+  background: #D4AF37;
+  color: #ffffff;
+}
+
+/* Utility Classes - Dark Mode */
+html.dark .glass-effect {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Utility Classes - Light Mode */
+html.light .glass-effect {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 50%, #00D9FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+/* Premium Button - Dark Mode */
+html.dark .premium-button {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(0, 217, 255, 0.1) 100%);
+  transition: all 0.3s ease;
+}
+
+html.dark .premium-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+html.dark .premium-button:hover::before {
+  left: 100%;
+}
+
+html.dark .premium-button:hover {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(0, 217, 255, 0.1);
+  border-color: #D4AF37;
+}
+
+/* Premium Button - Light Mode */
+html.light .premium-button {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.8);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(0, 217, 255, 0.15) 100%);
+  transition: all 0.3s ease;
+}
+
+html.light .premium-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+html.light .premium-button:hover::before {
+  left: 100%;
+}
+
+html.light .premium-button:hover {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+  border-color: #D4AF37;
+}
+
+/* Loading Animation - Dark Mode */
+html.dark .loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0A0A0A;
+  font-size: 24px;
+  font-weight: 600;
+  color: #D4AF37;
+}
+
+/* Loading Animation - Light Mode */
+html.light .loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+  color: #D4AF37;
+}
+
+/* Section Padding */
+.section {
+  @apply min-h-screen w-full px-4 md:px-8 lg:px-16 py-20;
+}
+
+/* Container */
+.container {
+  @apply max-w-7xl mx-auto;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply px-8 py-3 rounded-lg font-semibold transition-all duration-300 premium-button text-white hover:scale-105;
+}
+
+.btn-secondary {
+  @apply px-8 py-3 rounded-lg font-semibold transition-all duration-300 border border-white/20 hover:border-gold-500 hover:bg-gold-500/10;
+}
+
+/* Form Elements - Dark Mode */
+html.dark input[type="text"],
+html.dark input[type="email"],
+html.dark input[type="password"],
+html.dark input[type="date"],
+html.dark input[type="number"],
+html.dark select,
+html.dark textarea {
+  @apply w-full px-4 py-2 rounded-lg bg-dark-800 border border-dark-700 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-all duration-300;
+}
+
+/* Form Elements - Light Mode */
+html.light input[type="text"],
+html.light input[type="email"],
+html.light input[type="password"],
+html.light input[type="date"],
+html.light input[type="number"],
+html.light select,
+html.light textarea {
+  @apply w-full px-4 py-2 rounded-lg bg-light-50 border border-light-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-all duration-300;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes popupBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-popup-backdrop {
+  animation: popupBackdropIn 0.2s ease-out;
+}
+
+.animate-popup-card {
+  animation: popupCardIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}

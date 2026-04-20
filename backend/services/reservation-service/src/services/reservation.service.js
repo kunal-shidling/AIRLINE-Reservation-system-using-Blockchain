@@ -209,14 +209,20 @@ class ReservationService {
 
     const baseDate = new Date();
     const scheduleHours = [9, 13, 18];
+    const airlines = [
+      { name: 'Air India', prefix: 'AI', prices: { economy: 4200, business: 8500, firstClass: 15000 }, duration: 90, aircraft: 'Boeing 737' },
+      { name: 'SpiceJet', prefix: 'SG', prices: { economy: 3100, business: 6500, firstClass: 10500 }, duration: 110, aircraft: 'Airbus A320' },
+      { name: 'Vistara', prefix: 'UK', prices: { economy: 5500, business: 11000, firstClass: 18000 }, duration: 80, aircraft: 'Airbus A321neo' }
+    ];
 
     return scheduleHours.map((hour, index) => {
       const departureTime = new Date(baseDate);
       departureTime.setHours(hour, 0, 0, 0);
+      const airlineData = airlines[index];
 
       return {
-        flightNumber: `AR${100 + index}`,
-        airline: 'Airline Express',
+        flightNumber: `${airlineData.prefix}${100 + index}`,
+        airline: airlineData.name,
         origin: {
           city: originCity,
           airport: `${originCity} Airport`,
@@ -228,13 +234,9 @@ class ReservationService {
           airportCode: destinationCode
         },
         departureTime,
-        arrivalTime: new Date(departureTime.getTime() + (90 * 60 * 1000)),
-        duration: 90,
-        price: {
-          economy: 3500,
-          business: 7200,
-          firstClass: 12000
-        },
+        arrivalTime: new Date(departureTime.getTime() + (airlineData.duration * 60 * 1000)),
+        duration: airlineData.duration,
+        price: airlineData.prices,
         availableSeats: {
           economy: 120,
           business: 24,
@@ -245,7 +247,7 @@ class ReservationService {
           business: 24,
           firstClass: 8
         },
-        aircraft: 'Airbus A320',
+        aircraft: airlineData.aircraft,
         status: 'SCHEDULED',
         amenities: ['WIFI', 'MEALS']
       };
@@ -464,11 +466,11 @@ class ReservationService {
       // Every valid booking is recorded in the immutable ledger
       try {
         await axios.post(`${config.BLOCKCHAIN_SERVICE}${config.ENDPOINTS.BLOCKCHAIN.RECORD}`, {
-          bookingId: booking._id,
-          userId: booking.userId,
-          flightNumber: booking.flightDetails.flightNumber,
+          bookingId: booking.bookingReference,
+          transactionId: `TX-${booking._id}`,
           amount: booking.totalPrice,
-          seatClass: booking.seatClass,
+          paymentMethod: 'EXTERNAL',
+          status: booking.status,
           timestamp: new Date()
         }, { timeout: 2000 });
         Logger.info(SERVICE_NAME, `Booking ${booking.bookingReference} recorded on blockchain`);

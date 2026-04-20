@@ -179,6 +179,61 @@ class Blockchain {
   }
 
   /**
+   * Remove all pending transactions from the chain and rebuild hashes.
+   * @returns {Object} Cleanup summary
+   */
+  async removePendingTransactions() {
+    if (this.chain.length === 0) {
+      this.createGenesisBlock();
+      await this.saveToStorage();
+      return {
+        removedTransactions: 0,
+        remainingTransactions: 1,
+        totalBlocks: this.chain.length
+      };
+    }
+
+    const genesisBlock = this.chain[0];
+    const persistedTransactions = [];
+    let removedTransactions = 0;
+
+    for (let i = 1; i < this.chain.length; i++) {
+      const block = this.chain[i];
+      for (const tx of block.transactions) {
+        const normalizedStatus = String(tx.status || '').toUpperCase();
+        if (normalizedStatus === 'PENDING') {
+          removedTransactions += 1;
+        } else {
+          persistedTransactions.push(
+            tx instanceof Transaction ? tx : Transaction.fromObject(tx)
+          );
+        }
+      }
+    }
+
+    const rebuiltChain = [genesisBlock];
+    let previousBlock = genesisBlock;
+
+    for (let i = 0; i < persistedTransactions.length; i++) {
+      const rebuiltBlock = new Block(i + 1, [persistedTransactions[i]], previousBlock.hash);
+      rebuiltBlock.mineBlock(this.difficulty);
+      rebuiltChain.push(rebuiltBlock);
+      previousBlock = rebuiltBlock;
+    }
+
+    this.chain = rebuiltChain;
+    await this.saveToStorage();
+
+    Logger.info(SERVICE_NAME, `Removed ${removedTransactions} pending transactions`);
+
+    return {
+      removedTransactions,
+      remainingTransactions: this.chain.reduce((sum, block) => sum + block.transactions.length, 0),
+      totalBlocks: this.chain.length
+    };
+  }
+
+  /**
    * Get blockchain statistics
    * @returns {Object} Blockchain stats
    */

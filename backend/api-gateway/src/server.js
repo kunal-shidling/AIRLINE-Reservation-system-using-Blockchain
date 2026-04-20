@@ -6,6 +6,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const routes = require('./routes');
 const { generalLimiter } = require('./middleware/rateLimit.middleware');
 const Logger = require('../../shared/utils/logger');
@@ -22,6 +23,25 @@ class APIGateway {
   }
 
   setupMiddleware() {
+    // Basic security headers
+    this.app.use(helmet());
+
+    // Configure Content Security Policy
+    this.app.use(
+      helmet.contentSecurityPolicy({
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"], // Allow self and inline scripts for React
+          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com"],
+          imgSrc: ["'self'", "data:", "https:"],
+          connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5001", "http://localhost:5002", "http://localhost:5003", "http://localhost:5004", "http://localhost:5005", "https://sepolia.infura.io"],
+          objectSrc: ["'none'"],
+          upgradeInsecureRequests: [],
+        },
+      })
+    );
+
     // CORS configuration
     this.app.use(cors({
       origin: process.env.FRONTEND_URL || 'http://localhost:3000',
