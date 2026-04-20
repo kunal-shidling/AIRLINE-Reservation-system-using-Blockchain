@@ -7,8 +7,8 @@
 You are using **MongoDB Atlas (Cloud)** with the following connection:
 
 ```
-Cluster: cluster0.hpg38n4.mongodb.net
-Username: kunalshidling_db_user
+Cluster: cluster.mongodb.net
+Username: _db_user
 ```
 
 **Configured in:**
@@ -18,7 +18,7 @@ Username: kunalshidling_db_user
 
 **Connection string:**
 ```env
-MONGODB_URI=mongodb+srv://o@cluster0.hpg38n4.mongodb.net/
+MONGODB_URI=mongodb+srv://mongodb.net/
 ```
 
 ### 🔑 **API Keys** (Not Required! ✅)
